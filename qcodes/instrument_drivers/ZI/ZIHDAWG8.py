@@ -1,3 +1,4 @@
+import json
 import time
 from functools import partial
 
@@ -113,7 +114,6 @@ class ZIHDAWG8(Instrument):
         self.set('awgs_{}_waveform_index'.format(awg), index)
         self.daq.sync()
         self.set('awgs_{}_waveform_data'.format(awg), waveform)
-        self.daq.vectorWrite('/' + self.device + ''.format(awg), waveform)
 
     def set_channel_grouping(self, group):
         """
@@ -142,7 +142,7 @@ class ZIHDAWG8(Instrument):
                 'Properties'] else None
             setter = partial(self._setter, parameter['Node'], parameter['Type']) if 'Write' in parameter[
                 'Properties'] else None
-            options = validators.Enum(tuple([int(val) for val in parameter['Options'].keys()])) if parameter['Type'] == 'Integer (enumerated)' else None
+            options = validators.Enum(*[int(val) for val in parameter['Options'].keys()]) if parameter['Type'] == 'Integer (enumerated)' else None
             parameter_name = self._generate_parameter_name(parameter['Node'])
             self.add_parameter(name=parameter_name,
                                set_cmd=setter,
@@ -172,7 +172,8 @@ class ZIHDAWG8(Instrument):
 
         Returns: A dictionary of the device node tree.
         """
-        return self.daq.listNodesJSON('/{}/'.format(self.device), flags)
+        node_tree = self.daq.listNodesJSON('/{}/'.format(self.device), flags)
+        return json.loads(node_tree)
 
     def write_raw(self, cmd: str) -> None:
         """ Not implemented """
