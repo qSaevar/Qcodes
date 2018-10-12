@@ -142,7 +142,8 @@ class ZIHDAWG8(Instrument):
                 'Properties'] else None
             setter = partial(self._setter, parameter['Node'], parameter['Type']) if 'Write' in parameter[
                 'Properties'] else None
-            options = validators.Enum(*[int(val) for val in parameter['Options'].keys()]) if parameter['Type'] == 'Integer (enumerated)' else None
+            options = validators.Enum(*[int(val) for val in parameter['Options'].keys()]) \
+                if parameter['Type'] == 'Integer (enumerated)' else None
             parameter_name = self._generate_parameter_name(parameter['Node'])
             self.add_parameter(name=parameter_name,
                                set_cmd=setter,
