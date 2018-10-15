@@ -129,3 +129,15 @@ class TestZIHDAWG8(unittest.TestCase):
                     """)
         sequence_program = ZIHDAWG8.generate_csv_sequence_program(['wave_1'], [7])
         self.assertEqual(expected, sequence_program)
+
+    def test_DO_NOT_COMMIT(self):
+        with patch.object(zhinst.utils, 'create_api_session', return_value=3 * (MagicMock(),)), \
+             patch.object(qcodes.instrument_drivers.ZI.ZIHDAWG8.ZIHDAWG8, 'download_device_node_tree',
+                          return_value=self.node_tree):
+            hdawg8 = ZIHDAWG8('Name', 'dev-test')
+            import numpy as np
+            waveform_0 = -1.0 * np.blackman(42)
+
+            # Define an array of values that are used to generate wave w2
+            waveform_2 = np.sin(np.linspace(0, 2 * np.pi, 42))
+            hdawg8.waveform_to_csv("prumpsi", [1,2,3,4,5,6,7,8,9,0])

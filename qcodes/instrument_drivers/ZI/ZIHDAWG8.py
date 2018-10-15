@@ -98,9 +98,9 @@ class ZIHDAWG8(Instrument):
         if not os.path.isdir(wave_dir):
             raise Exception("AWG module wave directory {} does not exist or is not a directory".format(wave_dir))
         csv_file = os.path.join(wave_dir, wave_name + '.csv')
-        with open(csv_file, "w") as f:
-            writer = csv.writer(f, lineterminator='\n')
-            writer.writerow(zip(*waveforms))
+        with open(csv_file, "w", newline='') as f:
+            writer = csv.writer(f, delimiter=';')
+            writer.writerows(zip(*waveforms))
 
     @staticmethod
     def generate_csv_sequence_program(wave_names, channels=None):
