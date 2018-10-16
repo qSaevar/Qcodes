@@ -13,7 +13,8 @@ class ZIHDAWG8(Instrument):
     """
     QCoDeS driver for ZI HDAWG8.
 
-    Requires ZI Lab One software to be installed on the computer running QCoDeS.
+    Requires ZI LabOne software to be installed on the computer running QCoDeS (tested using LabOne (18.05.54618)
+    and firmware (53866).
     Furthermore, the Data Server and Web Server must be running and a connection
     between the two must be made.
     """
@@ -36,35 +37,35 @@ class ZIHDAWG8(Instrument):
         node_tree = self.download_device_node_tree()
         self.create_parameters_from_node_tree(node_tree)
 
-    def start_channel(self, channel):
+    def enable_channel(self, channel_number):
         """
         Enable a signal output, turns on a blue LED on the device.
         Args:
-            channel (int): Output channel that should be enabled.
+            channel_number (int): Output channel that should be enabled.
 
         Returns: None
         """
-        self.set('sigouts_{}_on'.format(channel), 1)
+        self.set('sigouts_{}_on'.format(channel_number), 1)
 
-    def stop_channel(self, channel):
+    def disable_channel(self, channel_number):
         """
         Disable a signal output, turns off a blue LED on the device.
         Args:
-            channel (int): Output channel that should be disabled.
+            channel_number (int): Output channel that should be disabled.
 
         Returns: None
         """
-        self.set('sigouts_{}_on'.format(channel), 0)
+        self.set('sigouts_{}_on'.format(channel_number), 0)
 
-    def start_awg(self, awg):
+    def start_awg(self, awg_number):
         """
         Activate an AWG
         Args:
-            awg (int): The AWG that should be enabled.
+            awg_number (int): The AWG that should be enabled.
 
         Returns: None
         """
-        self.set('awgs_{}_enable'.format(awg), 1)
+        self.set('awgs_{}_enable'.format(awg_number), 1)
 
     def stop_awg(self, awg):
         """
@@ -175,14 +176,6 @@ class ZIHDAWG8(Instrument):
         """
         node_tree = self.daq.listNodesJSON('/{}/'.format(self.device), flags)
         return json.loads(node_tree)
-
-    def write_raw(self, cmd: str) -> None:
-        """ Not implemented """
-        pass
-
-    def ask_raw(self, cmd: str) -> str:
-        """ Not implemented """
-        pass
 
     def _setter(self, name, param_type, value):
         if param_type == "Integer (64 bit)" or param_type == 'Integer (enumerated)':
